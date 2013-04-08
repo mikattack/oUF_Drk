@@ -2,7 +2,10 @@ local addon, ns = ...
 local cfg = ns.cfg
 
 local tags = oUF.Tags
+local format = string.format
 
+
+-- Short Value
 local SVal = function(val)
 	if val then
 		if (val >= 1e6) then
@@ -15,6 +18,7 @@ local SVal = function(val)
 	end
 end
 
+
 local function hex(r, g, b)
 	if r then
 		if (type(r) == 'table') then
@@ -24,22 +28,42 @@ local function hex(r, g, b)
 	end
 end
 
+
+-- Percent Health
 tags.Events["drk:perhp"] = 'UNIT_HEALTH UNIT_MAXHEALTH'
 tags.Methods["drk:perhp"] = function(u)
 	local m = UnitHealthMax(u)
 	if(m == 0) then
 		return 0
 	else
-		return math.floor((UnitHealth(u)/m*100+.05)*10)/10
+		return math.floor((UnitHealth(u)/m  *100 + .05) * 10 / 10) .. '%'
 	end
 end
 
+
+-- Raw HP ("current/max")
+tags.Events["drk:rhp"] = 'UNIT_HEALTH UNIT_MAXHEALTH'
+tags.Methods["drk:rhp"] = function(u)
+	if UnitIsDead(u) or UnitIsGhost(u) or not UnitIsConnected(u) then
+		return _TAGS["drk:DDG"](u)
+	else
+		local min, max = UnitHealth(u), UnitHealthMax(u)
+		if min == max then 
+			return SVal(max)
+		else
+			return "|cFFFFAAAA"..SVal(min).."|r/"..SVal(max)
+		end
+	end
+end
+
+
+-- Full Health Details ("current/max | percent")
 tags.Events["drk:hp"] = 'UNIT_HEALTH UNIT_MAXHEALTH'
 tags.Methods["drk:hp"] = function(u)
 	if UnitIsDead(u) or UnitIsGhost(u) or not UnitIsConnected(u) then
 		return _TAGS["drk:DDG"](u)
 	else
-		local per = _TAGS["drk:perhp"](u).."%" or 0
+		local per = _TAGS["drk:perhp"](u) or 0
 		local min, max = UnitHealth(u), UnitHealthMax(u)
 		if u == "player" or u == "target" then
 			if min~=max then 
@@ -53,6 +77,8 @@ tags.Methods["drk:hp"] = function(u)
 	end
 end
 
+
+-- Raid Health (deficit)
 tags.Events["drk:raidhp"] = 'UNIT_HEALTH UNIT_CONNECTION PLAYER_FLAGS_CHANGED'
 tags.Methods["drk:raidhp"] = function(u) 
   if UnitIsDead(u) or UnitIsGhost(u) or not UnitIsConnected(u) then
@@ -68,6 +94,8 @@ tags.Methods["drk:raidhp"] = function(u)
   end
 end
 
+
+-- Color String (based on unit, class, status, or reaction)
 tags.Events["drk:color"] = 'UNIT_REACTION UNIT_HEALTH UNIT_HAPPINESS'
 tags.Methods["drk:color"] = function(u)
 	local _, class = UnitClass(u)
@@ -88,6 +116,8 @@ tags.Methods["drk:color"] = function(u)
 	end
 end
 
+
+-- AFK/DnD
 tags.Events["drk:afkdnd"] = 'PLAYER_FLAGS_CHANGED'
 tags.Methods["drk:afkdnd"] = function(unit) 
 	return UnitIsAFK(unit) and "|cffCFCFCF <afk>|r" or UnitIsDND(unit) and "|cffCFCFCF <dnd>|r" or ""
@@ -98,6 +128,8 @@ tags.Methods["drk:raidafkdnd"] = function(unit)
 	return UnitIsAFK(unit) and "|cffCFCFCF AFK|r" or UnitIsDND(unit) and "|cffCFCFCF DND|r" or ""
 end
 
+
+-- Status (dead, ghost, offline)
 tags.Events["drk:DDG"] = 'UNIT_HEALTH'
 tags.Methods["drk:DDG"] = function(u)
 	if UnitIsDead(u) then
@@ -109,6 +141,8 @@ tags.Methods["drk:DDG"] = function(u)
 	end
 end
 
+
+-- Power
 tags.Events["drk:power"] = 'UNIT_MAXPOWER UNIT_POWER'
 tags.Methods["drk:power"]  = function(u) 
 	local min, max = UnitPower(u), UnitPowerMax(u)
@@ -119,6 +153,8 @@ tags.Methods["drk:power"]  = function(u)
 	end
 end
 
+
+-- Player Power
 tags.Events["my:power"] = 'UNIT_MAXPOWER UNIT_POWER'
 tags.Methods["my:power"] = function(unit)
 	local curpp, maxpp = UnitPower(unit), UnitPowerMax(unit);
@@ -163,6 +199,7 @@ tags.Methods["myComboPoints"] = function(unit)
 	return str
 end
 
+
 -- Deadly Poison Tracker
 tags.Events["myDeadlyPoison"] = 'UNIT_COMBO_POINTS PLAYER_TARGET_CHANGED UNIT_AURA'
 tags.Methods["myDeadlyPoison"] = function(unit)
@@ -192,6 +229,8 @@ tags.Methods["myDeadlyPoison"] = function(unit)
 	return str
 end
 
+
+-- Experience
 tags.Events["drk:xp"] = 'PLAYER_XP_UPDATE PLAYER_LEVEL_UP UNIT_PET_EXPERIENCE UPDATE_EXHAUSTION'
 tags.Methods["drk:xp"] = function(unit)
 	local curxp,maxxp,perxp
@@ -212,6 +251,8 @@ tags.Methods["drk:xp"] = function(unit)
 	end
 end
 
+
+-- Unit Level
 tags.Events["drk:level"] = 'UNIT_LEVEL PLAYER_LEVEL_UP UNIT_CLASSIFICATION_CHANGED'
 tags.Methods["drk:level"] = function(unit)
 	
@@ -248,6 +289,8 @@ tags.Methods["drk:level"] = function(unit)
 	return str
 end
 
+
+-- Alt. Power
 tags.Events["Drk:AltPowerBar"] = 'UNIT_POWER UNIT_MAXPOWER UNIT_POWER_BAR_SHOW UNIT_POWER_BAR_HIDE PLAYER_TARGET_CHANGED'
 tags.Methods["Drk:AltPowerBar"] = function(unit)
 	local ALTERNATE_POWER_INDEX = ALTERNATE_POWER_INDEX
@@ -265,8 +308,9 @@ tags.Methods["Drk:AltPowerBar"] = function(unit)
 end
 
 
+--
 -- CLASS BUFF INDICATORS
-
+--
 local GetTime = GetTime
 
 local numberize = function(val)

@@ -4,67 +4,94 @@
 
 local addon, ns = ...
 local cfg = CreateFrame("Frame")
+
 -----------------------------
 -- CONFIG
 -----------------------------
 
---unitframes
-	cfg.unitframeWidth = 250
-	cfg.unitframeScale = 1 -- Keep between 1 and 1.25 to have a good result, 1 = standard
---player
-	cfg.playerX = -180 -- x-coordinate of the player frame
-	cfg.playerY = 360 -- y-coordinate of the player frame
---target
-	cfg.targetX = 180 -- x-coordinate of the target frame
-	cfg.targetY = 360 -- y-coordinate of the target frame
---boss
-	cfg.bossX = 15 -- x-coordinate of boss frames
-	cfg.bossY = -40 -- y-coordinate is for the first bossframe, additional frames will grow upwards (75px each)
---auras
-	cfg.playerAuras = false -- show player buffs and debuffs, disables Blizzard buff bar
-	cfg.AltPowerBarPlayer = false --show altpowerbar on player frame, false = blizzard standard
-	cfg.targetBuffs = true -- show target buff frame
-	cfg.targetDebuffs = true -- show target debuff frame
-	cfg.totBuffs = false -- show target-of-target buffs (only one can be active)
-	cfg.totDebuffs = true -- show target-of-target debuffs (only one can be active)
-	cfg.focusBuffs = false -- show focus buffs (only one can be active)
-	cfg.focusDebuffs = true -- show focus debuffs (only one can be active)
---class-specific bars
-	cfg.showRunebar = true -- show DK rune bar
-	cfg.showHolybar = true -- show Paladin HolyPower bar
+-- 
+-- NOTE:  All coordinates are considered from the anchor point of a given frame.
+--        Each frame or bar's default is listed below and may be overridden.
+-- 
+
+-- Unitframes (general)
+	cfg.unitframeWidth = 350
+	cfg.unitframeScale = 1 		-- Keep between 1 and 1.25 to have a good result, 1 = standard
+
+-- Player
+	cfg.playerX = 0    				-- x-coordinate of the player frame
+	cfg.playerY = 45		 			-- y-coordinate of the player frame
+	-- cfg.playerP = nil      -- [Attachment Point] Unit frame to attach to (nil defaults to the whole screen)
+	-- cfg.playerA = 'BOTTOM' -- [Anchor Point] Where on attachment to anchor the frame ('TOP', 'BOTTOMLEFT', etc)
+
+-- Target
+	cfg.targetX = 0 				-- x-coordinate of the target frame
+	cfg.targetY = 8 				-- y-coordinate of the target frame
+	-- cfg.playerP = 'player'
+	-- cfg.playerA = 'TOPLEFT'
+
+-- Boss
+	cfg.bossX = 15 						-- x-coordinate of boss frames
+	cfg.bossY = 200 					-- y-coordinate is for the first bossframe, additional frames will grow upwards (75px each)
+	-- cfg.playerP = nil
+	-- cfg.playerA = 'BOTTOMLEFT'
+
+-- Auras
+	cfg.playerAuras = false   -- show player buffs and debuffs, disables Blizzard buff bar
+	cfg.targetBuffs = false   -- show target buff frame
+	cfg.targetDebuffs = false -- show target debuff frame
+
+-- Class-specific resource bars
+	cfg.resourcebarX = 0
+  cfg.resourcebarY = 24
+  -- cfg.resourcebarP = nil
+	-- cfg.resourcebarA = 'BOTTOM'
+
+	cfg.showRunebar = true 		-- show DK rune bar
+	cfg.showHolybar = true 		-- show Paladin HolyPower bar
 	cfg.showEclipsebar = true -- show druid Eclipse bar
-	cfg.showShardbar = true -- show Warlock SoulShard bar
+	cfg.showShardbar = true 	-- show Warlock SoulShard bar
 	cfg.showHarmonybar = true -- show Monk Harmony bar
-	cfg.showShadoworbsbar = true -- show Shadow Priest Shadow Orbs bar
+	cfg.showShadowbar = true 	-- show Shadow Priest Shadow Orbs bar
 	cfg.showComboPoints = true -- show Rogue Combo Points
---castbar
+
+-- Castbar
 	cfg.Castbars = true -- use built-in castbars
-	--player
+	cfg.castBarWidth  = 250
+	cfg.castBarHeight = 24
+
+	-- Player
 	cfg.playerCastBarOnUnitframe = true
 	cfg.playerCastBarX = 0
-	cfg.playerCastBarY = 200
-	cfg.playerCastBarWidth = 300
-	cfg.playerCastBarHeight = 30
-	--target
+	cfg.playerCastBarY = 250
+	-- cfg.playerCaseBarP = nil
+	-- cfg.playerCaseBarA = 'BOTTOM'
+
+	-- Target
 	cfg.targetCastBarOnUnitframe = true
 	cfg.targetCastBarX = 0
-	cfg.targetCastBarY = 250
+	cfg.targetCastBarY = 200
 	cfg.targetCastBarWidth = 200
-	cfg.targetCastBarHeight = 25	
---raid&party frames
-	cfg.showRaid = true -- show raid frames
-	cfg.raidShowSolo = true -- show raid frames even when solo
-	cfg.showIncHeals = true -- Show incoming heals in player and raid frames
-	cfg.showTooltips = true -- Show Tooltips on raid frames
-	cfg.enableRightClickMenu = false -- Enables the right click menu for raid frames
-	cfg.showRoleIcons = false -- Show Role Icons on raid frames
-	cfg.showIndicators = true -- Show Class Indicators on raid frames (HoT's, buffs etc.)
-	cfg.showThreatIndicator = true -- Show Threat Indicator on raid frames
+	cfg.targetCastBarHeight = 18
+	-- cfg.targetCaseBarP = 'playerCastBar'
+	-- cfg.targetCaseBarA = 'BOTTOM'
+
+-- Raid & party frames
+	cfg.showRaid = true 							-- show raid frames
+	cfg.raidShowSolo = true 					-- show raid frames even when solo
+	cfg.showIncHeals = true 					-- Show incoming heals in player and raid frames
+	cfg.showTooltips = true 					-- Show Tooltips on raid frames
+	cfg.enableRightClickMenu = false 	-- Enables the right click menu for raid frames
+	cfg.showRoleIcons = false 				-- Show Role Icons on raid frames
+	cfg.showIndicators = true 				-- Show Class Indicators on raid frames (HoT's, buffs etc.)
+	cfg.showThreatIndicator = true 		-- Show Threat Indicator on raid frames
 	
 	cfg.raidOrientationHorizontal = false
-	cfg.raidX = -410
-	cfg.raidY = 190
+	cfg.raidX = -420
+	cfg.raidY = 30
 	cfg.raidScale = 1
+	-- cfg.playerP = nil
+	-- cfg.playerA = 'TOPLEFT'
 	
 	cfg.IndicatorList = {
 		["NUMBERS"] = {
@@ -247,23 +274,27 @@ local cfg = CreateFrame("Frame")
 	}
 	
 	
---media files
-cfg.statusbar_texture = "Interface\\AddOns\\oUF_Drk\\media\\Statusbar"
-cfg.powerbar_texture = "Interface\\AddOns\\oUF_Drk\\media\\Aluminium"
-cfg.raid_texture = "Interface\\AddOns\\oUF_Drk\\media\\Minimalist"
-cfg.highlight_texture = "Interface\\AddOns\\oUF_Drk\\media\\raidbg"
-cfg.portrait_texture = "Interface\\AddOns\\oUF_Drk\\media\\portrait"
-cfg.backdrop_texture = "Interface\\AddOns\\oUF_Drk\\media\\backdrop"
-cfg.backdrop_edge_texture = "Interface\\AddOns\\oUF_Drk\\media\\backdrop_edge"
-cfg.debuff_border_texture = "Interface\\AddOns\\oUF_Drk\\media\\iconborder"
+-- Media files defaults
+cfg.statusbar_texture = "Interface\\AddOns\\oUF_Drk\\media\\bar\\Statusbar"
+cfg.powerbar_texture = "Interface\\AddOns\\oUF_Drk\\media\\bar\\Flat"
+cfg.raid_texture = "Interface\\AddOns\\oUF_Drk\\media\\bar\\Minimalist"
+
+cfg.highlight_texture = "Interface\\AddOns\\oUF_Drk\\media\\backdrop\\raidbg"
+cfg.portrait_texture = "Interface\\AddOns\\oUF_Drk\\media\\backdrop\\portrait"
+cfg.backdrop_texture = "Interface\\AddOns\\oUF_Drk\\media\\backdrop\\common"
+
+cfg.backdrop_edge_texture = "Interface\\AddOns\\oUF_Drk\\media\\border\\common"
+cfg.frame_edge_texture = "Interface\\AddOns\\oUF_Drk\\media\\border\\square"
+cfg.trans_edge_texture = "Interface\\AddOns\\oUF_Drk\\media\\border\\trans"
+cfg.debuff_border_texture = "Interface\\AddOns\\oUF_Drk\\media\\border\\icon"
 
 
-cfg.font = "Interface\\AddOns\\oUF_Drk\\media\\BigNoodleTitling.ttf"
-cfg.smallfont = "Interface\\AddOns\\oUF_Drk\\media\\semplice.ttf"
-cfg.raidfont = "Interface\\AddOns\\oUF_Drk\\media\\vibroceb.ttf"
-cfg.squarefont = "Interface\\AddOns\\oUF_Drk\\media\\squares.ttf"
+cfg.font = "Interface\\AddOns\\oUF_Drk\\media\\fonts\\BigNoodleTitling.ttf"
+cfg.smallfont = "Interface\\AddOns\\oUF_Drk\\media\\fonts\\Semplice.ttf"
+cfg.raidfont = "Interface\\AddOns\\oUF_Drk\\media\\fonts\\Vibroceb.ttf"
+cfg.squarefont = "Interface\\AddOns\\oUF_Drk\\media\\fonts\\Squares.ttf"
 
---do not change this
+-- Do not change this
 cfg.spec = nil
 cfg.updateSpec = function()
 	cfg.spec = GetSpecialization()

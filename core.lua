@@ -9,36 +9,26 @@ oUF.colors.smooth = {
 	.165, .188, .196 --max health
 }
 
+local focusOffset = (cfg.unitframeWidth * 0.30) / 2
+
 -----------------------
 -- Style Functions
 -----------------------
 
 local UnitSpecific = {
 
+	-- Default player rendering.  Only used when a class/spec-based layout isn't available
 	player = function(self, ...)
-	
 		self.mystyle = "player"
 		
 		-- Size and Scale
-		self:SetSize(cfg.unitframeWidth*cfg.unitframeScale, 50*cfg.unitframeScale)
+		self:SetSize(cfg.unitframeWidth * cfg.unitframeScale, 26 * cfg.unitframeScale)
 
 		-- Generate Bars
 		lib.addHealthBar(self)
 		lib.addStrings(self)
 		lib.addHighlight(self)
 		lib.addPowerBar(self)
-		lib.addPortrait(self)
-		
-		if cfg.AltPowerBarPlayer then lib.addAltPowerBar(self) end
-		lib.addAltPowerBarString(self)
-		if IsAddOnLoaded("oUF_Experience") then lib.addExperienceBar(self) end
-
-		-- Buffs and Debuffs
-		if cfg.playerAuras then
-			BuffFrame:Hide()
-			lib.addBuffs(self)
-			lib.addDebuffs(self)
-		end
 		
 		self.Health.frequentUpdates = true
 		self.Health.colorSmooth = true
@@ -51,11 +41,11 @@ local UnitSpecific = {
 		self.Power.Smooth = true
 		
 		-- Elements
+		lib.addBackground(self)
 		lib.addCastBar(self)
 		lib.addInfoIcons(self)
 		lib.addHealPred(self)
 		lib.addMirrorCastBar(self)
-		lib.addAFKTimer(self)
 
 		-- Class Bars
 		if cfg.showRunebar then lib.addRunes(self) end
@@ -63,26 +53,24 @@ local UnitSpecific = {
 		if cfg.showHarmonybar then lib.addHarmony(self) end
 		if cfg.showShardbar then lib.addShards(self) end
 		if cfg.showEclipsebar then lib.addEclipseBar(self) end
-		if cfg.showShadoworbsbar then lib.addShadoworbs(self) end
+		if cfg.showShadowbar then lib.addShadoworbs(self) end
 		
 		-- Event Handlers
 		self:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED", cfg.updateSpec)
-		
 	end,
 	
+
 	target = function(self, ...)
-	
 		self.mystyle = "target"
 		
 		-- Size and Scale
-		self:SetSize(cfg.unitframeWidth*cfg.unitframeScale, 50*cfg.unitframeScale)
+		self:SetSize(cfg.unitframeWidth * 0.70 *cfg.unitframeScale, 26*cfg.unitframeScale)
 
 		-- Generate Bars
 		lib.addHealthBar(self)
 		lib.addStrings(self)
 		lib.addHighlight(self)
 		lib.addPowerBar(self)
-		lib.addPortrait(self)
 
 		-- Bar Style
 		self.Health.frequentUpdates = true
@@ -99,23 +87,20 @@ local UnitSpecific = {
 		self.Power.Smooth = true
 		
 		-- Elements
+		lib.addBackground(self)
 		lib.addInfoIcons(self)
 		lib.addCastBar(self)
-		lib.addAFKTimer(self)
 		if cfg.targetBuffs then lib.addBuffs(self) end
 		if cfg.targetDebuffs then lib.addDebuffs(self) end
-		if cfg.showComboPoints then lib.addCPoints(self) end
 		lib.addHealPred(self)
-		lib.addAltPowerBar(self)
-		lib.addAltPowerBarString(self)
 	end,
 	
+
 	focus = function(self, ...)
-	
 		self.mystyle = "focus"
 		
 		-- Size and Scale
-		self:SetSize((cfg.unitframeWidth/2-5)*cfg.unitframeScale, 25*cfg.unitframeScale)
+		self:SetSize(cfg.unitframeWidth * 0.70 * cfg.unitframeScale, 26*cfg.unitframeScale)
 		
 		-- Generate Bars
 		lib.addHealthBar(self)
@@ -138,18 +123,18 @@ local UnitSpecific = {
 		self.Health.Smooth = true
 		
 		-- Elements
+		lib.addBackground(self)
 		lib.addInfoIcons(self)
 		lib.addCastBar(self)
 		if cfg.focusBuffs or cfg.focusDebuffs then lib.addFocusAuras(self) end
-		
 	end,
 	
-	targettarget = function(self, ...)
 
+	targettarget = function(self, ...)
 		self.mystyle = "tot"
 		
 		-- Size and Scale
-		self:SetSize((cfg.unitframeWidth/2-5)*cfg.unitframeScale, 25*cfg.unitframeScale)
+		self:SetSize((cfg.unitframeWidth * 0.3 - 8) * cfg.unitframeScale, 26*cfg.unitframeScale)
 
 		-- Generate Bars
 		lib.addHealthBar(self)
@@ -172,18 +157,17 @@ local UnitSpecific = {
 		self.Health.Smooth = true
 		
 		-- Elements
+		lib.addBackground(self)
 		lib.addInfoIcons(self)
-		lib.addCastBar(self)
-		if cfg.totBuffs or cfg.totDebuffs then lib.addTotAuras(self) end
 
 	end,
 	
+
 	focustarget = function(self, ...)
-		
 		self.mystyle = "focustarget"
 		
 		-- Size and Scale
-		self:SetSize((cfg.unitframeWidth/2-5)*cfg.unitframeScale, 25*cfg.unitframeScale)
+		self:SetSize((cfg.unitframeWidth) * 0.30 * cfg.unitframeScale, 25*cfg.unitframeScale)
 
 		-- Generate Bars
 		lib.addHealthBar(self)
@@ -203,17 +187,17 @@ local UnitSpecific = {
 		self.Power.bg.multiplier = 0.5
 		
 		--Elements
+		lib.addBackground(self)
 		lib.addInfoIcons(self)
 		lib.addCastBar(self)
 	
 	end,
 	
 	pet = function(self, ...)
-		
 		self.mystyle = "pet"
 		
 		-- Size and Scale
-		self:SetSize((cfg.unitframeWidth/2-5)*cfg.unitframeScale, 25*cfg.unitframeScale)
+		self:SetSize((cfg.unitframeWidth * 0.75)*cfg.unitframeScale, 12*cfg.unitframeScale)
 
 		-- Generate Bars
 		lib.addHealthBar(self)
@@ -233,13 +217,13 @@ local UnitSpecific = {
 		self.Power.bg.multiplier = 0.5
 		
 		-- Elements
+		lib.addBackground(self)
 		lib.addInfoIcons(self)
 		lib.addCastBar(self)
-		
 	end,
 	
+
 	raid = function(self, ...)
-				
 		self.mystyle = "raid"
 		
 		-- Range Check
@@ -264,6 +248,7 @@ local UnitSpecific = {
 		self.Power:SetAlpha(.9)
 		
 		-- Elements
+		lib.addBackground(self)
 		lib.addInfoIcons(self)
 		lib.CreateTargetBorder(self)
 		lib.addHealPred(self)
@@ -321,8 +306,6 @@ local BossStyle = function(self, unit)
 	lib.addHealthBar(self)
 	lib.addStrings(self)
 	lib.addPowerBar(self)
-	lib.addAltPowerBar(self)
-	--lib.addAltPowerBarString(self)
 
 	-- Bar Style
 	self.Health.colorSmooth = true
@@ -352,13 +335,13 @@ oUF:Factory(function(self)
 	-- Single Frames
 	self:SetActiveStyle('drkGlobal')
 
-	self:Spawn('player'):SetPoint("TOPRIGHT",UIParent,"BOTTOM", cfg.playerX, cfg.playerY)
-	self:Spawn('target'):SetPoint("TOPLEFT",UIParent,"BOTTOM", cfg.targetX, cfg.targetY)
+	self:Spawn('player'):SetPoint("BOTTOM",UIParent,"BOTTOM", cfg.playerX, cfg.playerY)
+	self:Spawn('target'):SetPoint("BOTTOMLEFT",oUF_drkGlobalPlayer,"TOPLEFT", cfg.targetX, cfg.targetY)
 
-	self:Spawn('targettarget'):SetPoint("BOTTOMRIGHT",oUF_drkGlobalTarget,"TOPRIGHT", 0, 7)
-	self:Spawn('pet'):SetPoint("BOTTOMLEFT",oUF_drkGlobalPlayer,"TOPLEFT", 0, 7)
-	self:Spawn('focus'):SetPoint("BOTTOMRIGHT",oUF_drkGlobalPlayer,"TOPRIGHT", 0, 7)
-	self:Spawn('focustarget'):SetPoint("BOTTOMLEFT",oUF_drkGlobalTarget,"TOPLEFT", 0, 7)
+	self:Spawn('targettarget'):SetPoint("LEFT",oUF_drkGlobalTarget,"RIGHT", 8, 0)
+	self:Spawn('pet'):SetPoint("TOPLEFT",oUF_drkGlobalPlayer,"BOTTOMLEFT", 0, -8)
+	self:Spawn('focus'):SetPoint("TOP",UIParent,"TOP", -focusOffset, -10)
+	self:Spawn('focustarget'):SetPoint("LEFT",oUF_drkGlobalFocus,"RIGHT", 8, 0)
 	
 	-- Raid Frames
 	if cfg.showRaid then
@@ -374,7 +357,7 @@ oUF:Factory(function(self)
 			  soloraid,
 			  "showRaid",           true,
 			  "point",              point,
-			  "startingIndex",		1,
+			  "startingIndex",		  1,
 			  "yOffset",            -5,
 			  "xoffset",            4,
 			  "columnSpacing",      7,
@@ -386,8 +369,8 @@ oUF:Factory(function(self)
 			  "maxColumns",         5,
 			  "unitsPerColumn",     5,
 			  "oUF-initialConfigFunction", [[
-				self:SetHeight(32)
-				self:SetWidth(77)
+				  self:SetHeight(32)
+				  self:SetWidth(77)
 			  ]]
 			)
 			
@@ -395,7 +378,7 @@ oUF:Factory(function(self)
 				header:SetAttribute("showSolo", true)
 				header:SetAttribute("showPlayer", true) 
 				header:SetAttribute("showParty", true)
-				header:SetPoint("TOPLEFT",UIParent,"BOTTOMRIGHT",cfg.raidX,cfg.raidY)
+				header:SetPoint("BOTTOMRIGHT",UIParent,"BOTTOMRIGHT",cfg.raidX,cfg.raidY)
 			else
 				if cfg.raidOrientationHorizontal then
 					header:SetPoint("TOPLEFT",raid[i-1],"BOTTOMLEFT",0,-5)
@@ -412,15 +395,15 @@ end)
 -- Boss Frames
 oUF:SetActiveStyle('drkBoss')
 local boss1 = oUF:Spawn("boss1", "oUF_Boss1")
-boss1:SetPoint("TOPLEFT", UIParent, "LEFT", cfg.bossX, cfg.bossY)
+boss1:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", cfg.bossX, cfg.bossY)
 local boss2 = oUF:Spawn("boss2", "oUF_Boss2")
-boss2:SetPoint("TOPLEFT", UIParent, "LEFT", cfg.bossX, cfg.bossY+75)
+boss2:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", cfg.bossX, cfg.bossY+75)
 local boss3 = oUF:Spawn("boss3", "oUF_Boss3")
-boss3:SetPoint("TOPLEFT", UIParent, "LEFT", cfg.bossX, cfg.bossY+150)
+boss3:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", cfg.bossX, cfg.bossY+150)
 local boss4 = oUF:Spawn("boss4", "oUF_Boss4")
-boss4:SetPoint("TOPLEFT", UIParent, "LEFT", cfg.bossX, cfg.bossY+225)
+boss4:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", cfg.bossX, cfg.bossY+225)
 local boss5 = oUF:Spawn("boss5", "oUF_Boss5")
-boss5:SetPoint("TOPLEFT", UIParent, "LEFT", cfg.bossX, cfg.bossY+300)
+boss5:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", cfg.bossX, cfg.bossY+300)
 
 
 oUF:DisableBlizzard('party')

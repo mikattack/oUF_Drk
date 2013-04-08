@@ -7,13 +7,7 @@ assert(oUF, "oUF_MonkHarmonyBar was unable to locate oUF install")
 local SPELL_POWER_CHI = SPELL_POWER_CHI
 local MONK_TALENT_ASCENSION = 115396
 local curMaxPower = 0
-local Colors = { 
-	[1] = {.69, .31, .31, 1},
-	[2] = {.65, .42, .31, 1},
-	[3] = {.65, .63, .35, 1},
-	[4] = {.46, .63, .35, 1},
-	[5] = {.33, .63, .33, 1},
-}
+local Colors = {.33, .63, .33, 1}
 
 
 local Update = function(self, event, unit, powerType)
@@ -81,7 +75,7 @@ local function Enable(self)
 				Point:SetStatusBarTexture([=[Interface\TargetingFrame\UI-StatusBar]=])
 			end
 			
-			--Point:SetStatusBarColor(unpack(Colors[i]))
+			--Point:SetStatusBarColor(unpack(Colors))
 			Point:SetFrameLevel(mhb:GetFrameLevel() + 1)
 			Point:GetStatusBarTexture():SetHorizTile(false)
 		end
